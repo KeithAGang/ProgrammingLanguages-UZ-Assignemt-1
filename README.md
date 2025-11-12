@@ -51,7 +51,7 @@ DATABASE_URL=file:local.db
 Drizzle will generate migration files based on your schema:
 
 ```bash
-npx run db:generate
+npm run db:generate
 ```
 
 This creates migration SQL files in the `drizzle` directory.
@@ -61,7 +61,7 @@ This creates migration SQL files in the `drizzle` directory.
 Apply the migrations to create your database tables:
 
 ```bash
-npx run db:migrate
+npm run db:migrate
 ```
 
 ### 5. Seed the Database
@@ -121,7 +121,7 @@ npm run db:reset
 Open Drizzle Studio to browse and edit your database:
 
 ```bash
-npx drizzle-kit studio
+npm drizzle-kit studio
 ```
 
 ## Project Structure
