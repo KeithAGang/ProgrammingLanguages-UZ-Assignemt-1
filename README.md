@@ -154,16 +154,42 @@ scripts/
 
 ## Features
 
+- **User Authentication:** Secure session-based authentication with login/signup
 - **Dashboard:** Overview of key metrics and recent activity
 - **Sales Management:** Record cash and credit sales for both shops
 - **Inventory Control:** Track stock levels, adjust quantities, set thresholds
 - **Payroll System:** Manage full-time and runner employee payments
 - **Credit Management:** Track B2B client accounts and transactions
 
+## Authentication
+
+The application includes a secure session-based authentication system with the following features:
+
+- **Password Hashing:** Uses PBKDF2 with 100,000 iterations for secure password storage
+- **Session Management:** 7-day session duration with secure HTTP-only cookies
+- **Protected Routes:** All business routes require authentication
+- **User Roles:** Support for admin and regular user roles
+
+### Default Admin Account
+
+After seeding the database, a default admin account is created:
+
+- **Email:** `admin@business.com`
+- **Password:** `admin123`
+
+**IMPORTANT:** Change this password immediately after first login in a production environment.
+
+### User Management
+
+- **Login:** Access the login page at `/login`
+- **Sign Up:** New users can create accounts at `/signup`
+- **Logout:** Users can logout using the logout button in the navigation bar
+
 ## Seeded Data
 
 The database reset includes:
 
+- **1 Admin Account:** Default admin user (admin@business.com / admin123)
 - **30 Grocery Items:** Maize meal, rice, cooking oil, household goods
 - **30 Hardware Items:** Engine oils, filters, brake pads, batteries
 - **8 Grocery Employees:** Zimbabwean names with various roles

@@ -1,5 +1,6 @@
-import { products, inventory, employees, credits, creditTransactions, sales, payroll } from './schema.js';
+import { products, inventory, employees, credits, creditTransactions, sales, payroll, users, sessions } from './schema.js';
 import { sql } from 'drizzle-orm';
+import { hashPassword } from '../auth.js';
 
 // Use standalone db client or regular one (for compatibility with scripts and SvelteKit)
 let db;
@@ -198,6 +199,26 @@ export async function seedDatabase() {
 
 		console.log(`[OK] Seeded ${defaultCreditClients.length} credit clients with sample transactions`);
 
+		// 4. Create default admin account
+		const existingUsers = await db.select().from(users);
+
+		if (existingUsers.length === 0) {
+			const defaultPassword = 'admin123';
+			const passwordHash = hashPassword(defaultPassword);
+
+			await db.insert(users).values({
+				email: 'admin@business.com',
+				passwordHash,
+				name: 'Admin User',
+				role: 'admin'
+			});
+
+			console.log('[OK] Created default admin account');
+			console.log('    Email: admin@business.com');
+			console.log('    Password: admin123');
+			console.log('    IMPORTANT: Change this password after first login!');
+		}
+
 		console.log('[SUCCESS] Database seeding completed successfully!');
 	} catch (error) {
 		console.error('[ERROR] Error seeding database:', error);
@@ -211,6 +232,8 @@ export async function dropDatabase() {
 	try {
 		console.log('Dropping all database tables...');
 
+		await db.delete(sessions);
+		await db.delete(users);
 		await db.delete(creditTransactions);
 		await db.delete(credits);
 		await db.delete(payroll);

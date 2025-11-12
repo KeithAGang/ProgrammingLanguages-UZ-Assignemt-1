@@ -1,6 +1,7 @@
 <script>
 	import { page } from '$app/stores';
 
+	let { user } = $props();
 	let mobileMenuOpen = $state(false);
 
 	const navigation = [
@@ -31,8 +32,8 @@
 			</div>
 
 			<!-- Desktop Navigation -->
-			<div class="hidden md:block">
-				<div class="ml-10 flex items-baseline space-x-4">
+			<div class="hidden md:flex md:items-center md:space-x-4">
+				<div class="flex items-baseline space-x-4">
 					{#each navigation as item}
 						<a
 							href={item.href}
@@ -44,6 +45,26 @@
 							{item.name}
 						</a>
 					{/each}
+				</div>
+
+				<!-- User menu -->
+				<div class="flex items-center space-x-3 ml-6 pl-6 border-l border-gray-700">
+					<span class="text-gray-300 text-sm">
+						{user.name}
+					</span>
+					{#if user.role === 'admin'}
+						<span class="px-2 py-1 text-xs font-medium bg-purple-600 text-white rounded">
+							Admin
+						</span>
+					{/if}
+					<form method="POST" action="/logout">
+						<button
+							type="submit"
+							class="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+						>
+							Logout
+						</button>
+					</form>
 				</div>
 			</div>
 
@@ -89,6 +110,31 @@
 						{item.name}
 					</a>
 				{/each}
+
+				<!-- Mobile user section -->
+				<div class="border-t border-gray-700 pt-4 pb-3">
+					<div class="flex items-center px-3">
+						<div>
+							<div class="text-base font-medium text-white">{user.name}</div>
+							<div class="text-sm font-medium text-gray-400">{user.email}</div>
+						</div>
+						{#if user.role === 'admin'}
+							<span class="ml-auto px-2 py-1 text-xs font-medium bg-purple-600 text-white rounded">
+								Admin
+							</span>
+						{/if}
+					</div>
+					<div class="mt-3 px-2">
+						<form method="POST" action="/logout">
+							<button
+								type="submit"
+								class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+							>
+								Logout
+							</button>
+						</form>
+					</div>
+				</div>
 			</div>
 		</div>
 	{/if}

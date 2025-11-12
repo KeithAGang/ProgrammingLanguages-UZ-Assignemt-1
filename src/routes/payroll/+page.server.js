@@ -1,9 +1,13 @@
 import { db } from '$lib/server/db/index.js';
 import { employees, payroll } from '$lib/server/db/schema.js';
 import { eq } from 'drizzle-orm';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals }) {
+	// Require authentication
+	if (!locals.user) {
+		throw redirect(303, '/login');
+	}
 	// Fetch all active employees
 	const allEmployees = await db
 		.select()

@@ -26,6 +26,7 @@ try {
 	console.log('   - 60 products (30 groceries + 30 hardware)');
 	console.log('   - 17 employees (8 grocery + 5 hardware + 4 runners)');
 	console.log('   - 6 credit clients with sample transactions');
+	console.log('   - 1 default admin account (admin@business.com / admin123)');
 	console.log('\n[INFO] You can now start your development server with: npm run dev\n');
 
 	process.exit(0);

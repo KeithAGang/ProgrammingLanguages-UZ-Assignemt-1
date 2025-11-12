@@ -15,6 +15,8 @@
  * 5. payroll - Payroll calculation records
  * 6. credits - B2B client accounts
  * 7. creditTransactions - Credit transaction ledger
+ * 8. users - User accounts for authentication
+ * 9. sessions - User session tracking
  */
 
 import { integer, sqliteTable, text, real } from 'drizzle-orm/sqlite-core';
@@ -126,4 +128,30 @@ export const creditTransactions = sqliteTable('credit_transactions', {
 		.notNull()
 		.default(sql`(unixepoch())`),
 	dueDate: integer('due_date', { mode: 'timestamp' })
+});
+
+// 8. USERS TABLE
+// User accounts for authentication
+export const users = sqliteTable('users', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	email: text('email').notNull().unique(),
+	passwordHash: text('password_hash').notNull(),
+	name: text('name').notNull(),
+	role: text('role').notNull().default('user'), // 'admin' or 'user'
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`(unixepoch())`)
+});
+
+// 9. SESSIONS TABLE
+// User session tracking for authentication
+export const sessions = sqliteTable('sessions', {
+	id: text('id').primaryKey(), // UUID session token
+	userId: integer('user_id')
+		.notNull()
+		.references(() => users.id),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
+	createdAt: integer('created_at', { mode: 'timestamp' })
+		.notNull()
+		.default(sql`(unixepoch())`)
 });

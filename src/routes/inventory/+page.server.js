@@ -1,9 +1,13 @@
 import { db } from '$lib/server/db/index.js';
 import { inventory, products } from '$lib/server/db/schema.js';
 import { eq, sql } from 'drizzle-orm';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
-export async function load() {
+export async function load({ locals }) {
+	// Require authentication
+	if (!locals.user) {
+		throw redirect(303, '/login');
+	}
 	// Fetch all inventory with product info
 	const allInventory = await db
 		.select({

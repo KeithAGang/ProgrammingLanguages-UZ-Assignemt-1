@@ -1,3 +1,4 @@
+import { redirect } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index.js';
 import { sales, credits, payroll, inventory } from '$lib/server/db/schema.js';
 import { sql, eq } from 'drizzle-orm';
@@ -6,7 +7,11 @@ import { sql, eq } from 'drizzle-orm';
  * Load dashboard metrics
  * Calculates key business indicators for display
  */
-export async function load() {
+export async function load({ locals }) {
+	// Require authentication
+	if (!locals.user) {
+		throw redirect(303, '/login');
+	}
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 	const todayTimestamp = Math.floor(today.getTime() / 1000);
