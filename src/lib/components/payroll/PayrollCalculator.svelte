@@ -3,8 +3,8 @@
 
 	let { fullTimeEmployees = [], form } = $props();
 
-	let selectedEmployees = $state(new Set());
-	let uniformDeductions = $state(new Set());
+	let selectedEmployees = $state([]);
+	let uniformDeductions = $state([]);
 
 	const TRANSPORT_ALLOWANCE = 50;
 	const MEAL_ALLOWANCE = 25;
@@ -12,42 +12,40 @@
 
 	let calculations = $derived(
 		fullTimeEmployees
-			.filter((emp) => selectedEmployees.has(emp.id))
+			.filter((emp) => selectedEmployees.includes(emp.id))
 			.map((emp) => ({
 				...emp,
 				transportAllowance: TRANSPORT_ALLOWANCE,
 				mealAllowance: MEAL_ALLOWANCE,
-				uniformDeduction: uniformDeductions.has(emp.id) ? UNIFORM_COST : 0,
+				uniformDeduction: uniformDeductions.includes(emp.id) ? UNIFORM_COST : 0,
 				totalPay:
 					emp.baseSalary +
 					TRANSPORT_ALLOWANCE +
 					MEAL_ALLOWANCE -
-					(uniformDeductions.has(emp.id) ? UNIFORM_COST : 0)
+					(uniformDeductions.includes(emp.id) ? UNIFORM_COST : 0)
 			}))
 	);
 
 	let grandTotal = $derived(calculations.reduce((sum, emp) => sum + emp.totalPay, 0));
 
 	function toggleEmployee(empId) {
-		if (selectedEmployees.has(empId)) {
-			selectedEmployees.delete(empId);
+		if (selectedEmployees.includes(empId)) {
+			selectedEmployees = selectedEmployees.filter((id) => id !== empId);
 		} else {
-			selectedEmployees.add(empId);
+			selectedEmployees = [...selectedEmployees, empId];
 		}
-		selectedEmployees = selectedEmployees;
 	}
 
 	function toggleUniform(empId) {
-		if (uniformDeductions.has(empId)) {
-			uniformDeductions.delete(empId);
+		if (uniformDeductions.includes(empId)) {
+			uniformDeductions = uniformDeductions.filter((id) => id !== empId);
 		} else {
-			uniformDeductions.add(empId);
+			uniformDeductions = [...uniformDeductions, empId];
 		}
-		uniformDeductions = uniformDeductions;
 	}
 
 	function selectAll() {
-		selectedEmployees = new Set(fullTimeEmployees.map((e) => e.id));
+		selectedEmployees = fullTimeEmployees.map((e) => e.id);
 	}
 </script>
 
@@ -84,11 +82,11 @@
 			</thead>
 			<tbody>
 				{#each fullTimeEmployees as emp}
-					<tr class={selectedEmployees.has(emp.id) ? 'bg-blue-50' : 'bg-white'}>
+					<tr class={selectedEmployees.includes(emp.id) ? 'bg-blue-50' : 'bg-white'}>
 						<td class="border p-2">
 							<input
 								type="checkbox"
-								checked={selectedEmployees.has(emp.id)}
+								checked={selectedEmployees.includes(emp.id)}
 								onchange={() => toggleEmployee(emp.id)}
 								class="w-4 h-4"
 							/>
@@ -98,21 +96,21 @@
 						<td class="border p-2 text-right">${TRANSPORT_ALLOWANCE}</td>
 						<td class="border p-2 text-right">${MEAL_ALLOWANCE}</td>
 						<td class="border p-2 text-center">
-							{#if selectedEmployees.has(emp.id)}
+							{#if selectedEmployees.includes(emp.id)}
 								<input
 									type="checkbox"
-									checked={uniformDeductions.has(emp.id)}
+									checked={uniformDeductions.includes(emp.id)}
 									onchange={() => toggleUniform(emp.id)}
 									class="w-4 h-4"
 								/>
 							{/if}
 						</td>
 						<td class="border p-2 text-right font-semibold">
-							{#if selectedEmployees.has(emp.id)}
+							{#if selectedEmployees.includes(emp.id)}
 								${emp.baseSalary +
 									TRANSPORT_ALLOWANCE +
 									MEAL_ALLOWANCE -
-									(uniformDeductions.has(emp.id) ? UNIFORM_COST : 0)}
+									(uniformDeductions.includes(emp.id) ? UNIFORM_COST : 0)}
 							{/if}
 						</td>
 					</tr>
