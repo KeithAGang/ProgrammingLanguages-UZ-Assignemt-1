@@ -51,7 +51,7 @@ DATABASE_URL=file:local.db
 Drizzle will generate migration files based on your schema:
 
 ```bash
-npx drizzle-kit generate
+npx run db:generate
 ```
 
 This creates migration SQL files in the `drizzle` directory.
@@ -61,7 +61,7 @@ This creates migration SQL files in the `drizzle` directory.
 Apply the migrations to create your database tables:
 
 ```bash
-npx drizzle-kit migrate
+npx run db:migrate
 ```
 
 ### 5. Seed the Database
